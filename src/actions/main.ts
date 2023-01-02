@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import { blue, green, yellow } from "kolorist";
 import prompts from "prompts";
-import { IGNORE_DIRS, ORIGINAL, SUPPORT_LINTER } from "../constants";
+import {
+  IGNORE_DIRS,
+  ORIGINAL,
+  ROOT_WORKSPACE_DIR,
+  SUPPORT_LINTER,
+} from "../constants";
 import { Iminimist, InpmPackages, NPMFiles } from "../types";
 import {
   autoMatcher,
@@ -24,9 +29,14 @@ import {
 } from "../request";
 import spawn from "cross-spawn";
 import { boom, promptsOnCancel } from "../error";
+import path from "node:path";
 
 export const main = async (argv: Iminimist) => {
   validateConfigConflict();
+
+  if (!fs.existsSync(path.join(ROOT_WORKSPACE_DIR, "package.json"))) {
+    boom(`package.json not found, are you in the project root directory?`);
+  }
 
   const config = userConfig;
   let packageManager = detectPkgManage();
@@ -61,10 +71,6 @@ export const main = async (argv: Iminimist) => {
     if (!res.useDefault) {
       boom(`Can't detect original, please specify one.`);
     }
-  }
-
-  if (!fs.existsSync("package.json")) {
-    boom(`package.json not found, are you in the project root directory?`);
   }
 
   if (!packageManager) {

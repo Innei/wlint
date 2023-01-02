@@ -1,4 +1,6 @@
+import path from "path";
 import { userHome } from "./utils/user";
+import { findPackageJSONPath } from "./utils/workspace";
 export const WLINT = `${userHome}/.config`;
 export const CONFIG = `${WLINT}/.wlintrc.json`;
 export const ORIGINAL = `wibus-wee/wlint-config`;
@@ -29,3 +31,7 @@ export const AUTO_MATCH = {
 };
 
 export const IGNORE_DIRS = ["node_modules"];
+
+export const ROOT_WORKSPACE_DIR = path.dirname(
+  findPackageJSONPath(process.env.INIT_CWD || String(process.cwd()))
+);

@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import path from "node:path";
+import { ROOT_WORKSPACE_DIR } from "../constants";
 
 export function generatePrettierrcFile(json: string) {
   const jsons = JSON.parse(json);
@@ -19,7 +21,10 @@ module.exports = {
   })}
 };
 `;
-  fs.writeFileSync("./.prettierrc.js", prettierrc.replace(/^\n/, ""));
+  fs.writeFileSync(
+    path.join(ROOT_WORKSPACE_DIR, ".prettierrc.js"),
+    prettierrc.replace(/^\n/, "")
+  );
 }
 
 export function generateLinterRcFile(linter: string, json: string) {
@@ -27,9 +32,13 @@ export function generateLinterRcFile(linter: string, json: string) {
     generatePrettierrcFile(json);
     return;
   }
-  fs.writeFileSync(`./.${linter.replace(".json", "")}rc.json`, json, {
-    encoding: "utf-8",
-  });
+  fs.writeFileSync(
+    path.join(ROOT_WORKSPACE_DIR, `.${linter.replace(".json", "")}rc.json`),
+    json,
+    {
+      encoding: "utf-8",
+    }
+  );
 }
 
 export function prettyStringify(value: any) {

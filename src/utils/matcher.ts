@@ -1,7 +1,7 @@
 import { yellow, blue } from "kolorist";
 import path from "node:path";
 import fs from "node:fs";
-import { AUTO_MATCH } from "../constants";
+import { AUTO_MATCH, ROOT_WORKSPACE_DIR } from "../constants";
 import { boom } from "../error";
 import { userConfig } from "./config";
 
@@ -24,10 +24,10 @@ export function autoMatcher(autoMatchConfig?: {
   if (!userConfig?.autoMatch) {
     return undefined;
   }
-  if (!fs.existsSync(path.resolve(process.cwd(), "package.json"))) {
+  if (!fs.existsSync(path.resolve(ROOT_WORKSPACE_DIR, "package.json"))) {
     boom(`Please run this command in a project folder`);
   }
-  const packages = require(path.resolve(process.cwd(), "package.json"));
+  const packages = require(path.resolve(ROOT_WORKSPACE_DIR, "package.json"));
   let dependencies: string[] = [];
   if (packages.dependencies) {
     // 只需要名字
